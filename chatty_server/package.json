@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    ".": "nodemon server.js",
+    ".": "nodemon server/server.js",
+    "auth": "nodemon authserver/authserver.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "devlogs",

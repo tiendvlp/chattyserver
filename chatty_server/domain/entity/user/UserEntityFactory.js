@@ -1,13 +1,12 @@
 let userEntityFactory = function (validator) {
-    return (id, email, name, avatarName, avatarColor, channelIds) => {
-        let (error) = validator({id, email, name, avatarName, avatarColor, channelIds}) 
+    return (id, email, name, avatar, channelIds) => {
+        let {error} = validator({id, email, name, avatar, channelIds}) 
         if (error) throw error
         return {
             getId : () => id,
             getEmail : () => email,
             getName : () => name,
-            getAvatarName : () => avatarName,
-            getAvatarColor : () => avatarColor,
+            getAvatar : () => avatar,
             getChannelIds : () => channelIds
         }
     }

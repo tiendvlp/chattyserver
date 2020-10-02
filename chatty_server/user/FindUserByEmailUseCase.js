@@ -3,9 +3,11 @@ const db = require('../data/mongodb/ConnectMongodb')
 
 function findUserByEmail (userEmail, callback) {
     let query = {email : userEmail}
-    db.get().collection ("Account").findOne(query,function (err, result) {
-            console.log("find one in Account: " + result)
-            callback(err, result)
+    console.log('email to be query: ' + userEmail)
+    db.get().collection ("User").findOne(query,function (err, result) {
+            if (err) return callback(err, false) 
+            if (!result) return callback(null, false)
+            return callback(err, result)
     })
 }
 

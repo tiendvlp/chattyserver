@@ -1,9 +1,10 @@
 let accountEntityFactory = function (validator) {
-    return (email, password, isEmailVerified, date) => {
-         let {error} = validator ({email, password, isEmailVerified, date})
+    return (id, email, password, isEmailVerified, date) => {
+         let {error} = validator ({id, email, password, isEmailVerified, date})
          if (error) throw new Error(error)
          return {
              getEmail : () => email,
+             getId : () => id,
              getIsEmailVerified : () => isEmailVerified,
              getPassword : () => password,
              getCreatedDate : () => date
