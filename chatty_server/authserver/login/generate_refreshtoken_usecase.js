@@ -9,7 +9,8 @@ module.exports.execute = function (serializableData, callback) {
         refreshToken : refreshToken,
         createdDate : new Date().getTime()
     }
-    db.get().collection("RefreshToken").insertOne(refreshTokenDocument, function (err) {
+    console.log("Generate refresh token")
+    return db.get().collection("RefreshToken").insertOne(refreshTokenDocument, function (err) {
         if (err) return callback(err, false)
         return callback(null, refreshToken)
     })

@@ -9,14 +9,10 @@ const authDb = require('./authdb')
 
 authDb.connect((err) => {
     if (!err) {
-        app.listen(3000, (req, res, next) => {
+        app.listen(4000, (req, res, next) => {
             console.log('Connected to auth')
         })
     }
-})
-
-app.listen (4000, function (req, res, next) {
-        
 })
 
 app.get('/', function (req, res, next) {

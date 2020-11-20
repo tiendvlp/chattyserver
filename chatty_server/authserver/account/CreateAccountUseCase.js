@@ -8,7 +8,7 @@ function createNewAccount (param, callback) {
         //time that save in db have to be in millisecond-format
         createdDate: new Date().getTime()
     }
-    db.get().collection ("Account").insertOne(newAccount, function (err) {
+    return db.get().collection ("Account").insertOne(newAccount, function (err) {
             console.log("CreateNewAccount error: " + err)
             if (err) return callback(err)
             return callback(err)
