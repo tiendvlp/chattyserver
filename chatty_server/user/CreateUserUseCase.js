@@ -2,7 +2,7 @@ const db = require('../data/mongodb/ConnectMongodb')
 const findUserByEmailUsecase =require ('../user/FindUserByEmailUseCase')
 
 const execute = function (param, callback) {
-    findUserByEmailUsecase.execute(param.email, function (err, user) {
+    return findUserByEmailUsecase.execute(param.email, function (err, user) {
         if (err) return callback(err)
         if (user) return callback (new Error ("user already exist"))
         // if user is not exist, create new user
