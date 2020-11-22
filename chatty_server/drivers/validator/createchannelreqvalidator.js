@@ -1,6 +1,6 @@
-const validator = require('../../../common/validator/validator')
+const validator = require('../../common/validator/validator')
 const Joi = require ('joi')
-const db = require('../../../data/mongodb/ConnectMongodb')
+const db = require('../../data/mongodb/ConnectMongodb')
 
 module.exports = function (req, res, next) {
     if (!req.account) {return res.status(400).json({message: "UNAUTHORIZATION"})}

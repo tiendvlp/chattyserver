@@ -1,4 +1,4 @@
-const db = require('../../../data/mongodb/ConnectMongodb')
+const db = require('../../data/mongodb/ConnectMongodb')
 const mongodb = require('mongodb')
 
 module.exports = function (req, res, next) {

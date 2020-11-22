@@ -1,5 +1,6 @@
 const db = require('../data/mongodb/ConnectMongodb')
 const ObjectId = require('mongodb').ObjectID
+const updateStatusUseCase = require('../channelstatus/UpdateChannelStatusUsecase')
 
 const execute = function (messageBody, senderEmail, channelId, callback) {
     var newMessageDoc = {
@@ -11,7 +12,10 @@ const execute = function (messageBody, senderEmail, channelId, callback) {
     }
     return db.get().collection("Message").insertOne (newMessageDoc, function (err) {
         if (err) {return callback(err)}
-        return callback (null)
+
+        return updateStatusUseCase.execute(channelId, "Text", messageBody, function (err) {
+            return callback (null)
+        })
     })
 }
 

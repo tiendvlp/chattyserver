@@ -1,6 +1,6 @@
-const db = require('../../../data/mongodb/ConnectMongodb')
+const db = require('../../data/mongodb/ConnectMongodb')
 const Joi = require('joi')
-const validator = require('../../../common/validator/validator')
+const validator = require('../../common/validator/validator')
 const { valid } = require('joi')
 const mongodb = require('mongodb')
 

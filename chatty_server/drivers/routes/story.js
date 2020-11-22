@@ -4,7 +4,7 @@ const multer = require('multer')
 const db = require('../../data/mongodb/ConnectMongodb')
 const upImgStoryUsecase = require('../../story/upimgstoryusecase')
 const authValidatorMiddleware = require('../middleware/verifyauth')
-const upImageStoryReqValidatorMiddleware = require('../middleware/validator/upstoryimgreqvalidator')
+const upImageStoryReqValidatorMiddleware = require('../validator/upstoryimgreqvalidator')
 const crypto = require('crypto')
 
 const storage = multer.diskStorage({

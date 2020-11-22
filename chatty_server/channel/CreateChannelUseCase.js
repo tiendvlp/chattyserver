@@ -46,12 +46,7 @@ function createNewChannel (admin, compactUsers,message, callback) {
         title : title,
         admin: admin,
         status : {
-            senderEmail: admin, 
-            description: {
-                // only support firstmessage is text
-                type: "Text" , 
-                content: message.body
-            }
+            
         },
         members : compactUsers,
         seen: [admin],
@@ -67,12 +62,7 @@ function createNewChannel (admin, compactUsers,message, callback) {
 }
 
 function sendFirstMessage (adminEmail,firstMessage, channelId, callback) {
-    let newMessage = {
-        body: firstMessage.body,
-        senderEmail: adminEmail,
-        channelId: channelId
-    }
-    return sendTextMessageUsecase.execute(newMessage,adminEmail, channelId, function (err) {
+    return sendTextMessageUsecase.execute(firstMessage.body,adminEmail, channelId, function (err) {
         if (err) return callback(err)
         return callback(null)
     })
