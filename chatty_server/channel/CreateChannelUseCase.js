@@ -1,81 +1,87 @@
 const db = require('../data/mongodb/ConnectMongodb')
-const findUserByEmailUseCase = require("../user/FindUserByEmailUseCase")
+const mongo = require('mongodb')
+const sendTextMessageUsecase = require("../message/SendTextMessageUseCase")
 
-const execute = function (param, callback ) {
-    const channelDocument = {
-        title : "",
-        admin : "",
-        status : {
-            senderEmail : "",
-            description : {
-                type : "",
-                content : {}
-            }
-        },
-        members : [],
-        seen : [],
-        createdDate : 0,
-        latestUpdate : 0
-    }
-
-    return findAllMember(param.memberEmails, function (err, memDatas) {
-        if (err) {return callback(err)}
-        if (!memDatas || memDatas.length == 0 ) {return callback(new Error("There is no members"))}
-        
-        // create members
-        channelDocument.members = memDatas
-
-        // create title
-        var i = 0;
-        memDatas.forEach(element => {
-            if (i === memDatas.length-1) {
-                channelDocument.title += element.name
-                return
-            }            
-            channelDocument.title += element.name + ", "
-            i++;
-        });
-        // remove last ',' character
-        // channelDocument.title = channelDocument.title.substr(0, channelDocument.title.length-1)
-
-        // init admin
-        channelDocument.admin = param.admin
-
-        // init status
-        channelDocument.status.senderEmail = param.admin
-        channelDocument.status.description.type = "Text"
-        channelDocument.status.description.content = param.firstMessage
-
-        // init seen: sender is default seen the message
-        channelDocument.seen.push(param.admin)
-
-        // init createdDate
-        var currentTime =  new Date().getTime();
-        channelDocument.createdDate = currentTime;
-        channelDocument.latestUpdate = currentTime;
-
-        return db.get().collection("Channel").insertOne(channelDocument, function (err) {
-            if (err) return callback(err)
-            return callback(null)
-        });
-    })    
-}
-
-function findAllMember (memberEmails, callback) {
-    console.log("huhu: " + memberEmails)
-    return db.get().collection("User").find({email: {$in : memberEmails}}).toArray(function (err, users) {
-        if (err) {return callback(err, false)}
-        if (!users) {return callback(null, false)}
-        console.log("Creating_channel_progress find members: " + users.length)
-        return callback(null, users)
+module.exports.execute = function (adminEmail,memberEmails, firstMessage, callback) {
+    memberEmails[memberEmails.length] = adminEmail
+    return findCompactUsers(memberEmails, function (err, result) {
+        if(result.length <= 0) {return callback(new Error("Your userIds is invalid"))}
+        if (err) return callback(err)
+        if (!result) return callback(result)
+        let compactUsers = result
+        return createNewChannel(adminEmail,compactUsers,firstMessage, function (err,channelId) {
+            if (err) {return callback(err)}
+            return sendFirstMessage(adminEmail,firstMessage,channelId, function (err) {
+                if (err) {rollback(channelId); return callback(err);} 
+                return callback(null)
+            })
+        })
     })
 }
 
-const param = function (admin, memberEmails, firstMessage) {
-    return {admin, memberEmails, firstMessage}
+function findCompactUsers (memberEmails, callback) {
+    let query = {email : {$in : memberEmails}}
+    let normalize = {
+        _id : 1,
+        email : 1,
+        name : 1,
+        avatar : 1
+    }
+
+    db.get().collection("User").find(query, normalize).toArray(function(err, result) {
+        if (err) return callback(err, false)
+        if (!result) return callback(null, false)
+        console.log("compact user result: " + result)
+        return callback(null, result) 
+    })
 }
 
-module.exports = {
-    execute : execute,
-    param : param
+function createNewChannel (admin, compactUsers,message, callback) {
+    let title = ""
+    compactUsers.forEach(user => {
+        title += user.name + ","
+    }); 
+    title = title.substr(0, title.length-1)
+    let newChannel = {
+        title : title,
+        admin: admin,
+        status : {
+            senderEmail: admin, 
+            description: {
+                // only support firstmessage is text
+                type: "Text" , 
+                content: message.body
+            }
+        },
+        members : compactUsers,
+        seen: [admin],
+        createdDate: new Date().getTime(),
+        latestUpdate: new Date().getTime(),
+    }
+
+    db.get().collection("Channel").insertOne(newChannel, function (err, result) {
+        if (err) return callback(err, null)
+        console.log("Inserted Channel id: " + result.ops[0]._id)
+        return callback(null, result.ops[0]._id)
+    })
+}
+
+function sendFirstMessage (adminEmail,firstMessage, channelId, callback) {
+    let newMessage = {
+        body: firstMessage.body,
+        senderEmail: adminEmail,
+        channelId: channelId
+    }
+    return sendTextMessageUsecase.execute(newMessage,adminEmail, channelId, function (err) {
+        if (err) return callback(err)
+        return callback(null)
+    })
+}
+
+// to make sure everything is all success or all failed
+function rollback (createdChannelId) {
+    // clear createdChannel
+    db.get().collection("Channel").deleteOne({_id: new mongo.ObjectID(createdChannelId)}, function (err) {
+        console.log("ROLLING BACK DUE TO FAILED IN CREATING NEW CHANNEL !")
+    })
 }

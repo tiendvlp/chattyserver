@@ -1,8 +1,8 @@
 const express = require('express')
 const router = new express.Router()
-const sendtextmessagemiddleware = require('../middleware/sendtextmessage')
-const authMiddleware = require('../middleware/verifyauth')
+const sendTextMessageMiddleware = require('../middleware/sendtextmessage')
+const verifyauth = require('../middleware/verifyauth')
+const sendTextMessageReqValidatorMiddleware = require('../middleware/validator/sendtextmessagereqvalidator')
 
-router.post('/sendtextmessage', authMiddleware, sendtextmessagemiddleware)
-
+router.post("/sendtextmessage", verifyauth,sendTextMessageReqValidatorMiddleware, sendTextMessageMiddleware)
 module.exports = router

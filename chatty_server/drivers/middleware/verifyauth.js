@@ -8,7 +8,6 @@ module.exports = function (req, res, next) {
     console.log("verify auth")
     jwt.verify(authToken, process.env.ACCESS_TOKEN_SECRET, function (err, account) {
         console.log(err)
-        console.log("verify auth")
         if (err) return res.status(400).json({message: "err: " + err })
         if (!account) return res.status(400).json({message: "Invalid token"})
 
