@@ -1,6 +1,6 @@
 const db = require('../data/mongodb/ConnectMongodb')
 const mongo = require('mongodb')
-const sendTextMessageUsecase = require("../message/SendTextMessageUseCase")
+const sendTextMessageUsecase = require("../message/sendtextmessage_usecase")
 
 module.exports.execute = function (adminEmail,memberEmails, firstMessage, callback) {
     memberEmails[memberEmails.length] = adminEmail

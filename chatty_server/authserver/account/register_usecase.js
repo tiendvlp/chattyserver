@@ -1,5 +1,5 @@
-const findAccountByEmailUseCase = require('./FindAccountByEmailUseCase')
-const createNewAccountUseCase = require('./CreateAccountUseCase')
+const findAccountByEmailUseCase = require('./find_account_byemail_usecase')
+const createNewAccountUseCase = require('./create_account_usecase')
 const Bcrypt = require ('bcryptjs')
 const accountEntity = require('../../domain/entity/account/Index')
 

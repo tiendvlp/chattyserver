@@ -1,4 +1,4 @@
-const sendTextMessageUsecase = require("../../message/SendTextMessageUseCase")
+const sendTextMessageUsecase = require("../../message/sendtextmessage_usecase")
 
 module.exports = function (req, res, next) {
     sendTextMessageUsecase.execute(req.body,function (err) {

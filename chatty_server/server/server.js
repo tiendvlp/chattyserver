@@ -1,10 +1,10 @@
 var express = require('express')
 var app = express()
 var mongodbIndex = require('../data/mongodb/ConnectMongodb')
-const userRouter = require('../drivers/routes/user')
-const channelRouter = require('../drivers/routes/channel')
-const messageRouter = require('../drivers/routes/message')
-const storyRouter = require('../drivers/routes/story')
+const userRouter = require('../drivers/routes/userrouter')
+const channelRouter = require('../drivers/routes/channelrouter')
+const messageRouter = require('../drivers/routes/messagerouter')
+const storyRouter = require('../drivers/routes/storyrouter')
 const bodyParser = require('body-parser')
 
 mongodbIndex.connect((err) => {

@@ -1,5 +1,5 @@
-const findAccountByEmailUseCase = require('../account/FindAccountByEmailUseCase')
-const Bcrypt = require ('bcryptjs')
+const findAccountByEmailUseCase = require('../account/find_account_byemail_usecase')
+const bcrypt = require ('bcryptjs')
 const generateRefreshTokenUseCase = require('./generate_refreshtoken_usecase')
 const generateAccessTokenUseCase = require('./generate_accesstoken_usecase')
 require('dotenv').config()
@@ -8,7 +8,7 @@ module.exports.execute = function (email, password, callback) {
     return findAccountByEmailUseCase.execute(email, function (err, account) {
         if (err)  return callback (err, false)
         if (!account)  return callback (null, false) 
-        return Bcrypt.compare(password, account.getPassword(), function (err, isValid) {
+        return bcrypt.compare(password, account.getPassword(), function (err, isValid) {
             console.log("Bcrypt compare password: " + isValid)
             if (err) return callback (err)
             if (!isValid) return callback (null, false)

@@ -1,4 +1,4 @@
-const logoutusecase = require('../../account/LogoutUseCase')
+const logoutusecase = require('../../account/logout_usecase')
 
 module.exports = function (req, res, next) {
     return logoutusecase.execute(req.email, function (err, result) {

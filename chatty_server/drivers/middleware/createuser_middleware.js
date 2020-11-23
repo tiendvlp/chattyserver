@@ -1,4 +1,4 @@
-const createUserUsecase = require('../../user/CreateUserUseCase')
+const createUserUsecase = require('../../user/createuser_usecase')
 
 module.exports = function (req, res, next) {
     const reqUser = req.body.user

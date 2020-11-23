@@ -1,6 +1,6 @@
 const { addSyntheticLeadingComment } = require("typescript");
 const db = require('../data/mongodb/ConnectMongodb')
-const updateChannelStatus = require('../channelstatus/UpdateChannelStatusUsecase');
+const updateChannelStatus = require('../channelstatus/update_channelstatus_usecase');
 const { type } = require("../data/mongodb/story/imagestory/imagestoryschema");
 
 module.exports.execute = function (channelId, inviterEmail, newMemberEmail, callback) {

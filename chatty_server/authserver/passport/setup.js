@@ -1,8 +1,8 @@
 const passport = require('passport')
-const findUserByIdUseCase = require ('../../user/FindUserByIdUseCase')
+const findUserByIdUseCase = require ('../../user/finduser_byemail_usecase')
 const LocalStrategy = require('passport-local').Strategy
-const loginUseCase = require('../../authserver/login/loginusecase')
-const registerUseCase = require('../../authserver/account/RegisterUseCase')
+const loginUseCase = require('../login/login_usecase')
+const registerUseCase = require('../../authserver/account/register_usecase')
 
 passport.use("LOCAL_LOGIN",new LocalStrategy({usernameField : "email", passwordField: "password"}, (email, password, done) => {
    return loginUseCase.execute (email, password, function (err, user) {

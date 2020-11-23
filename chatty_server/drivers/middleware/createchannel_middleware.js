@@ -1,4 +1,4 @@
-const createChannelUsecase = require('../../channel/CreateChannelUsecase')
+const createChannelUsecase = require('../../channel/createchannel_usecase')
 
 module.exports = function (req, res, next) {
     createChannelUsecase.execute(req.account.email,req.body.channelData.memberEmails, req.body.firstMessage, function (err) {

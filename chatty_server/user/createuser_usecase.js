@@ -1,5 +1,5 @@
 const db = require('../data/mongodb/ConnectMongodb')
-const findUserByEmailUsecase =require ('../user/FindUserByEmailUseCase')
+const findUserByEmailUsecase =require ('./finduser_byemail_usecase')
 
 const execute = function (param, callback) {
     return findUserByEmailUsecase.execute(param.email, function (err, user) {

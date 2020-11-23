@@ -1,4 +1,4 @@
-let channelEntityFactory = function (channelEntityValidator) {
+const channelEntityFactory = function (channelEntityValidator) {
     return (id, title, members, seen, createdDate, latestUpdate, status, admin) => {
         let {error} = channelEntityValidator({id, title, memberIds})
         if (error) throw new Error(error)
