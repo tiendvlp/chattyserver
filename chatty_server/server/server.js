@@ -1,11 +1,13 @@
-var express = require('express')
-var app = express()
-var mongodbIndex = require('../data/mongodb/ConnectMongodb')
+const express = require('express')
+const app = express()
+const http = require('http').createServer(app)
+const mongodbIndex = require('../data/mongodb/ConnectMongodb')
 const userRouter = require('../drivers/routes/userrouter')
 const channelRouter = require('../drivers/routes/channelrouter')
 const messageRouter = require('../drivers/routes/messagerouter')
 const storyRouter = require('../drivers/routes/storyrouter')
 const bodyParser = require('body-parser')
+const io = require('socket.io')(http)
 
 mongodbIndex.connect((err) => {
     if (!err) {
@@ -26,6 +28,10 @@ app.use(function (req, res, next) {
       return res.status(200).json({});
     }
     next();
+})
+
+io.on('connection', function (socket) {
+    console.log('a new user connected')
 })
 
 app.use(bodyParser.urlencoded({ extended: false }))
