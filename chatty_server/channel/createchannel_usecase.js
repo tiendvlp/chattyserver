@@ -13,10 +13,21 @@ module.exports.execute = function (adminEmail,memberEmails, firstMessage, callba
             if (err) {return callback(err)}
             return sendFirstMessage(adminEmail,firstMessage,channelId, function (err) {
                 if (err) {rollback(channelId); return callback(err);} 
+                addChannelToUserObservableList(compactUsers, channelId)
                 return callback(null)
             })
         })
     })
+}
+
+// User need to know what channel they are observing
+function addChannelToUserObservableList (users, channelId) {
+    const collection = db.get().collection ('UserObservedChannel')
+
+    users.forEach(function (user, i) {
+        collection.updateOne({userEmail: user.email}, {$push: {observedChannel: channelId} },{ upsert : true })
+    })
+    
 }
 
 function findCompactUsers (memberEmails, callback) {

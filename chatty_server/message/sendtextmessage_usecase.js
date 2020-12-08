@@ -11,10 +11,10 @@ const execute = function (messageBody, senderEmail, channelId, callback) {
         createdDate : new Date().getTime()
     }
     return db.get().collection("Message").insertOne (newMessageDoc, function (err) {
-        if (err) {return callback(err)}
+        if (err) {return callback(err, false)}
 
         return updateStatusUseCase.execute(channelId, "Text", messageBody, function (err) {
-            return callback (null)
+            return callback (null, newMessageDoc)
         })
     })
 }

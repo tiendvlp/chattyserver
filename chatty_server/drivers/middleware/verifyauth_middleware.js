@@ -14,5 +14,4 @@ module.exports = function (req, res, next) {
         req.account = account
         next()
     })
-
 }

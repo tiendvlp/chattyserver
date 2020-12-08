@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const db = require('../authdb')
 
 module.exports.execute = function (serializableData, callback) {
-    const refreshToken = jwt.sign(serializableData, process.env.REFRESH_TOKEN_SECRET)
+    const refreshToken = jwt.sign(serializableData, process.env.REFRESH_TOKEN_SECRET, { algorithm: "HS256", expiresIn: '7d' })
     let refreshTokenDocument = {
         userEmail : serializableData.email,
         userId : serializableData.id,
