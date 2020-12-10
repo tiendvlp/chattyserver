@@ -13,6 +13,7 @@ const io_instance = require('../common/socket_io_instance')
 const firebaseAdmin = require('firebase-admin')
 const accountService = require('../service_account.json')
 const notificationRouter = require('../drivers/routes/notificationrouter')
+const graphqlRouter = require('../drivers/routes/graphql_router')
 
     firebaseAdmin.initializeApp({
         credential: firebaseAdmin.credential.cert(accountService),
@@ -71,6 +72,7 @@ app.use('/channel', channelRouter)
 app.use('/user', userRouter)
 app.use('/message', messageRouter)
 app.use('/notification', notificationRouter)
+app.use('/graphql',graphqlRouter)
 app.get('/', (req, res) => {
     res.json({ message: 'Chat API is ALIVE!' })
   });
