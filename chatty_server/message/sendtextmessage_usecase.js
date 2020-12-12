@@ -13,7 +13,7 @@ const execute = function (messageBody, senderEmail, channelId, callback) {
     return db.get().collection("Message").insertOne (newMessageDoc, function (err) {
         if (err) {return callback(err, false)}
 
-        return updateStatusUseCase.execute(channelId, "Text", messageBody, function (err) {
+        return updateStatusUseCase.execute(senderEmail,channelId, "Text", messageBody, function (err) {
             return callback (null, newMessageDoc)
         })
     })

@@ -14,7 +14,7 @@ function checkChannel (channelId,senderEmail,callback) {
         members : 1
     }
 
-    db.get().collection("Channel").findOne({_id: new mongodb.ObjectID(channelId)}, function (err, result) {
+    db.get().collection("Channel").findOne({_id: new mongodb.ObjectID(channelId), normalize}, function (err, result) {
         if (err) return callback(false)
         if (!result) return callback(false)
         let isExist = false

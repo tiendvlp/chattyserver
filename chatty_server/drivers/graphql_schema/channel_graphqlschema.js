@@ -1,5 +1,5 @@
 const {makeExecutableSchema} = require('graphql-tools')
-const getUserChannelUseCase = require('../../channel/getalluserchannel_usecase') 
+const getUserChannelUseCase = require('../../channel/get_userlatestupdatechannel_usecase') 
 const {BigIntResolver} = require('graphql-scalars')
 
 const typeDefs = `
@@ -31,6 +31,7 @@ const typeDefs = `
     }
 
     type ChannelMember {
+        id: String!,
         email: String!,
         name: String!
     } 

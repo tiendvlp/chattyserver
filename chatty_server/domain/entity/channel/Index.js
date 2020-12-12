@@ -1,5 +1,5 @@
 const channelEntityValidatorSchema = require('./ChannelEntityValidatorSchema')
-const entityValidator = require('../validator/EntityValidator') (channelEntityValidatorSchema)
+const entityValidator = require('../../../common/validator/validator') (channelEntityValidatorSchema)
 const channelEntityFactory = require('./ChannelEntity') 
 
 module.exports = channelEntityFactory(entityValidator)
