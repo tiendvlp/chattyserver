@@ -1,15 +1,14 @@
 let messageEntityFactory = function (messageEntityValidator) {
-    return (
-        id , messageBody, senderId, channelId , sent , senderInfo) => {
-        let {error} = messageEntityValidator({id , messageBody, senderId, channelId , sent , senderInfo})
+    return (id , channelId, content, type , createdDate , senderEmail) => {
+        let {error} = messageEntityValidator({id , content, type, channelId , createdDate , senderEmail})
         if (error) throw new Error(error)
         return {
-            getId: () => id,
-            getMessageBody: () => messageBody,
-            getSender: () => senderId,
-            getChannelId: () => channelId,
-            getSent: () => sent,
-            getSenderInfo: () => senderInfo
+            id,
+            content,
+            type,
+            createdDate,
+            senderEmail,
+            channelId
         }
     }
 }

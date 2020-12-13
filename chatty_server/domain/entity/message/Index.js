@@ -1,4 +1,4 @@
 const messageEntityFactory = require('./MessageEntity')
 const messageEntityValidatorSchemma = require ('./MessageEntityValidatorSchema')
-const entityValidator = require('../validator/EntityValidator') (messageEntityValidatorSchemma)
+const entityValidator = require('../../../common/validator/validator') (messageEntityValidatorSchemma)
 module.exports = messageEntityFactory(entityValidator)

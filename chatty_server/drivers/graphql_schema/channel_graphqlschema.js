@@ -1,6 +1,7 @@
 const {makeExecutableSchema} = require('graphql-tools')
-const getUserChannelUseCase = require('../../channel/get_userlatestupdatechannel_usecase') 
 const {BigIntResolver} = require('graphql-scalars')
+
+const getUserChannelUseCase = require('../../channel/get_userlatestupdatechannel_usecase') 
 
 const typeDefs = `
     scalar BigInt
