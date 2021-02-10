@@ -2,10 +2,10 @@ const db = require('../data/mongodb/ConnectMongodb')
 const ObjectId = require('mongodb').ObjectID
 const updateStatusUseCase = require('../channelstatus/update_channelstatus_usecase')
 
-const execute = function (messageBody, senderEmail, channelId, callback) {
+const execute = function (messageBody, senderEmail, channelId, type, content, callback) {
     var newMessageDoc = {
-        type: "Text",
-        content: messageBody,
+        type: type,
+        content: content,
         senderEmail : senderEmail,
         channelId : new ObjectId (channelId),
         createdDate : new Date().getTime()

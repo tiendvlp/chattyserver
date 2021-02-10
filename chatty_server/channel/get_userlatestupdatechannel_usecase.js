@@ -1,14 +1,14 @@
 const mongodb = require('../data/mongodb/ConnectMongodb')
 const channelEntity = require('../domain/entity/channel/Index')
 
-function execute (userEmail, count, callback) {
+function execute (userEmail,fromLastUpdate, count, callback) {
     let channelCollection = mongodb.get().collection('Channel')
 
     let query = {
-        admin: userEmail,
-        latestUpdate: {$lt: new Date().getTime()}
+        // channel that have userEmail as a member
+        members: {$elemMatch: {email: userEmail}},
+        latestUpdate: {$lt: parseInt(fromLastUpdate)}
     }
-
     let sort = {
         latestUpdate: -1
     }

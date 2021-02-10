@@ -9,6 +9,5 @@ module.exports = Joi.object ().keys ({
     avatar : Joi.object().keys ({
         type : Joi.string().required().error((err) => {return Error("AvatarType is missing")}),
         content: Joi.object().required().error ((err) => {return Error("AvatarContent is missing")}) 
-    }),
-    channelIds : Joi.array().items(Joi.string().required()).required().error(() => {return Error('Channel must include at least 2 member')})
+    })
 })

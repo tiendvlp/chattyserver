@@ -1,13 +1,15 @@
 const {makeExecutableSchema} = require('graphql-tools')
-const {BigIntResolver} = require('graphql-scalars')
+const {BigIntResolver, JSONResolver} = require('graphql-scalars')
 
 const getUserChannelUseCase = require('../../channel/get_userlatestupdatechannel_usecase') 
+const { ApolloError } = require('apollo-server')
 
 const typeDefs = `
     scalar BigInt
-    
+    scalar JSON
+
     type Query {
-        getChannels (count: Int!, userEmail: String!): [Channel]
+        getChannels (lastUpdate: BigInt!,count: Int!): [Channel]
     }
 
     type Channel {
@@ -34,20 +36,27 @@ const typeDefs = `
     type ChannelMember {
         id: String!,
         email: String!,
-        name: String!
+        name: String!,
+        avatar: ChannelMemberAvatar!
     } 
-`
 
+    type ChannelMemberAvatar {
+        type: String!,
+        content: JSON
+    }
+`
 
 const queryResolvers = {
     BigInt: BigIntResolver,
-    
+    JSON: JSONResolver,
     Query: {
-        getChannels: function (_, {count, userEmail}) {
+        getChannels: function (_, {lastUpdate, count}, request) {
             return new Promise((resolve, reject ) => {
-                return getUserChannelUseCase.execute(userEmail,count, function (err, result) {
-                    if (err) {return reject(err)}
-                    if (!result) {return reject(Error("404 not found"))}
+                let userEmail = request.account.email
+                console.log("olalal" + lastUpdate)
+                return getUserChannelUseCase.execute(userEmail,lastUpdate, count, function (err, result) {
+                    if (err) {return reject(new ApolloError(err.message, "502"))}
+                    if (!result) {return reject(new ApolloError("Channel not found", "404"))}
                     return resolve(result)
                 })
             })

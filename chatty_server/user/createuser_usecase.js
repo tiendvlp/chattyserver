@@ -9,7 +9,8 @@ const execute = function (param, callback) {
         let newUser = {
             email : param.email,
             name : param.name,
-            avatar : param.avatar
+            // by default the avatar is set automatically, user can changed it later
+            avatar : "46e9f5e6cae3e99ffa0ef7ec69b2cda9_default_avatar.png"
         }
         db.get().collection("User").insertOne (newUser, function (err) {
             if (err) return callback (err)
@@ -21,8 +22,8 @@ const execute = function (param, callback) {
    
 }
 
-const param = function (email, name, avatar) {
-    return {email, name, avatar }
+const param = function (email, name) {
+    return {email, name }
 }
 
 module.exports = {

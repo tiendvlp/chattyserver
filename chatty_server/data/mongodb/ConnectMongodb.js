@@ -1,5 +1,5 @@
 let mongoDb
-let bucket
+let storyBucket
 let gridFsStorage // use as a support-engine for multer to work with mongodb
 let client
 const crypto = require('crypto')
@@ -12,14 +12,14 @@ function connect (callBack) {
   client = new MongoClient(uri, { useNewUrlParser: true });
   client.connect(err => {
     mongoDb = client.db("chatty")
-    bucket = new mongo.GridFSBucket(mongoDb, {bucketName: "story"})
-    createGridFsStorage()
+    storyBucket = new mongo.GridFSBucket(mongoDb, {bucketName: "resource"})
+    createGridFsStoryStorage()
     console.log('Chatty: Connected(main_db)')
     callBack(err)
   });
 }
 
-function createGridFsStorage () {
+function createGridFsStoryStorage () {
   gridFsStorage = new GridFSStorage({
     db: mongoDb,
     file: (req, file) => {
@@ -32,7 +32,7 @@ function createGridFsStorage () {
           console.log("crypto: " +filename)
           const fileInfo = {
             filename: filename,
-            bucketName: "story"
+            bucketName: "resource"
           }
           resolve(fileInfo)
         });
@@ -49,7 +49,7 @@ function getGridFsStorage () {
 }
 
 function getBucket () {
-  return bucket
+  return storyBucket
 }
 
 function close () {

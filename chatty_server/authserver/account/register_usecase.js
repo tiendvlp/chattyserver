@@ -6,7 +6,7 @@ const accountEntity = require('../../domain/entity/account/Index')
 module.exports.execute = function (email, password, callback) {
     return findAccountByEmailUseCase.execute(email, function (err, user) {
         if (err) return callback (err)
-        if (user) return callback (new Error("User already exist"))
+        if (user) return callback ({message: "Your user already exist", code: 409})
         // generate a new account
         console.log("generate new user")
         return Bcrypt.genSalt(10, function(err, salt) {

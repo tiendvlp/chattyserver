@@ -17,9 +17,10 @@ module.exports.execute = function (email, password, callback) {
             console.log("loginusecase: " + "userId: " + account.getId())
             return generateRefreshTokenUseCase.execute({email: account.getEmail(), id: account.getId()}, function (err, refreshToken) {
                 if (err) return callback(err, null)
-                return generateAccessTokenUseCase.execute(refreshToken, function (err, accessToken) {
-                    console.log("login usecase run")
+                if (!refreshToken) {return callback(false, null)}
+                return generateAccessTokenUseCase.execute(refreshToken.token, function (err, accessToken) {
                     if (err) {return callback(err, null)}
+                    if (!accessToken) {return callback(null, false)}
                     return callback(null, {accessToken: accessToken, refreshToken: refreshToken})
                 })
             })

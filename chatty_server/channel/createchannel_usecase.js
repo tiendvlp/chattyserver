@@ -1,6 +1,6 @@
 const db = require('../data/mongodb/ConnectMongodb')
 const mongo = require('mongodb')
-const sendTextMessageUsecase = require("../message/sendtextmessage_usecase")
+const sendTextMessageUsecase = require("../message/sendmessage_usecase")
 
 module.exports.execute = function (adminEmail,memberEmails, firstMessage, callback) {
     memberEmails[memberEmails.length] = adminEmail
@@ -9,7 +9,7 @@ module.exports.execute = function (adminEmail,memberEmails, firstMessage, callba
         if (err) return callback(err)
         if (!result) return callback(result)
         let compactUsers = result
-        return createNewChannel(adminEmail,compactUsers,firstMessage, function (err,channelId) {
+        return createNewChannel(adminEmail,compactUsers, function (err,channelId) {
             if (err) {return callback(err)}
             return sendFirstMessage(adminEmail,firstMessage,channelId, function (err) {
                 if (err) {rollback(channelId); return callback(err);} 
@@ -35,8 +35,7 @@ function findCompactUsers (memberEmails, callback) {
     let normalize = {
         _id : 1,
         email : 1,
-        name : 1,
-        avatar : 1
+        name : 1
     }
 
     db.get().collection("User").find(query, normalize).toArray(function(err, result) {
@@ -47,11 +46,18 @@ function findCompactUsers (memberEmails, callback) {
     })
 }
 
-function createNewChannel (admin, compactUsers,message, callback) {
+function createNewChannel (admin, compactUsers, callback) {
     let title = ""
     compactUsers.forEach(user => {
         title += user.name + ","
     }); 
+
+    let members = []
+
+    compactUsers.forEach(user => {
+        members[members.length] = user.email
+    })
+
     title = title.substr(0, title.length-1)
     let newChannel = {
         title : title,
@@ -59,7 +65,7 @@ function createNewChannel (admin, compactUsers,message, callback) {
         status : {
             
         },
-        members : compactUsers,
+        members : members,
         seen: [admin],
         createdDate: new Date().getTime(),
         latestUpdate: new Date().getTime(),

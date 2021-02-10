@@ -12,6 +12,8 @@
   "author": "devlogs",
   "license": "ISC",
   "dependencies": {
+    "apollo-server": "^2.19.1",
+    "apollo-server-express": "^2.19.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "connect-redis": "^5.0.0",

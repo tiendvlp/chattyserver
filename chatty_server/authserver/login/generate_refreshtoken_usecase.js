@@ -12,6 +12,8 @@ module.exports.execute = function (serializableData, callback) {
     console.log("Generate refresh token")
     return db.get().collection("RefreshToken").insertOne(refreshTokenDocument, function (err) {
         if (err) return callback(err, false)
-        return callback(null, refreshToken)
+        const expiredDate = new Date()
+        expiredDate.setDate(expiredDate.getDate() + 7)
+        return callback(null, {token: refreshToken, expiredAt: expiredDate.getTime()})
     })
 }

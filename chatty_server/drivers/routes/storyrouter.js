@@ -1,47 +1,20 @@
 const express = require('express')
 const router = new express.Router()
-const multer = require('multer')
-const db = require('../../data/mongodb/ConnectMongodb')
-const upImgStoryUsecase = require('../../story/upimgstoryusecase')
-const authValidatorMiddleware = require('../middleware/verifyauth_middleware')
-const upImageStoryReqValidatorMiddleware = require('../validator/upstoryimg_req_validator')
-const crypto = require('crypto')
+const upStoryUseCase = require('../../story/upstory_usecase')
+const verifyauth = require('../middleware/verifyauth_middleware')
+const upStoryReqValidator = require('../validator/upstoryimg_req_validator')
+const upToTemp = require('../../drivers/middleware/uploadresource_totemp_middleware')
+const upToDb = require('../../drivers/middleware/uploadresource_fromtemptodb_middleware')
+const validateType = require('../middleware/validate_storytype_middleware')
 
-const storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-      callback(null, './temp/');
-    },
-    filename: function(req, file, callback) {
-        crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-            return callback(err, false)
-        }
-        const filename = buf.toString("hex")+"_"+(file.originalname.replace(/\s/g,''))
-        console.log("crypto: " +filename)
-        return callback(null, filename)
-        });
-    }
-});
+router.post("/upload/:channelid", verifyauth, upStoryReqValidator ,upToTemp, validateType, upToDb,
+     function (req, res, next) {
+        if (!req.account) {return res.status(401).json({message: "UnAuthorization"})}
+        upStoryUseCase.execute(req.account.email, req.story.channelId, req.story.type, req.story.resourceName, function (err) {
+            if (err) {return res.status(500).json({message: "Internal error:", err: err})}
+            return res.status(200).json({message: "Success"})
+        })     
+      }
+    )
 
-const multerFilter = function (req, file, callback) {
-    if (file.minetype === "image/png" || file.minetype === "image/jpeg") {
-        return callback(null, true)
-    }
-    return callback(new Error("Only accept PNG/JPEG"), false)
-}
-
-function init () {
-    const upload = multer({storage: storage, limits: {
-        fileSize: 1024*1024*1}},multerFilter)
-    
-        router.post ('/newimgstory',authValidatorMiddleware, upload.single("content"), upImageStoryReqValidatorMiddleware, function (req, res, next) {
-        upImgStoryUsecase.execute(req.account.email, req.body.channelId,{type: req.file.mimetype, imageName: req.file.filename}, function (err) {
-                if(err) {return res.status(400).json({message: "failed: " + err})}
-                return res.status(200).json({message: "success"})
-         })
-    })
-}
-
-module.exports = {
-    router, init
-}
+module.exports = router

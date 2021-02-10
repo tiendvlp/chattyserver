@@ -2,6 +2,7 @@ const {makeExecutableSchema} = require('graphql-tools')
 const {BigIntResolver} = require('graphql-scalars')
 
 const getChannelLatestMessageUseCase = require('../../message/get_latestchannelmessage_usecase')
+const { ApolloError } = require('apollo-server')
 
 const typeDefs = `
 
@@ -29,8 +30,8 @@ const resolvers = {
         getMessages (_, {count, channelId}) {
             return new Promise ((resolve, reject) => {
                 getChannelLatestMessageUseCase.execute(channelId, count, function (err, result) {
-                if (err) {return reject(err)}
-                if (!result) {return reject(Error('404 can not load your messages'))}
+                if (err) {return reject(new ApolloError(err.message, "502"))}
+                if (!result) {return reject(new ApolloError('can not load your messages', "404"))}
 
                 return resolve(result)
             })
