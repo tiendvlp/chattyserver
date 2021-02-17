@@ -43,7 +43,7 @@ app.use('/message', messageRouter)
 app.use('/resource', resourceRouter)
 app.use('/notification', notificationRouter)
 
-app.use('/graphql' ,verifyauth, graphqlRouter)
+app.use('/graphql' , graphqlRouter)
 
 
 app.get('/', (req, res) => {

@@ -23,11 +23,9 @@ module.exports.execute = function (adminEmail,memberEmails, firstMessage, callba
 // User need to know what channel they are observing
 function addChannelToUserObservableList (users, channelId) {
     const collection = db.get().collection ('UserObservedChannel')
-
     users.forEach(function (user, i) {
         collection.updateOne({userEmail: user.email}, {$push: {observedChannel: channelId} },{ upsert : true })
     })
-    
 }
 
 function findCompactUsers (memberEmails, callback) {

@@ -1,7 +1,8 @@
 const {makeExecutableSchema} = require('graphql-tools')
 const {BigIntResolver} = require('graphql-scalars')
 
-const getChannelLatestMessageUseCase = require('../../message/get_latestchannelmessage_usecase')
+const getPreviousChannelMessageWithCount = require('../../message/get_previouschannelmessage_withcount_usecase')
+const getMessagesOverPeriodOfTime = require('../../message/get_channelmessage_overperiod_usecase')
 const { ApolloError } = require('apollo-server')
 
 const typeDefs = `
@@ -9,7 +10,8 @@ const typeDefs = `
     scalar BigInt
 
     type Query {
-        getMessages (count: Int!, channelId: String!): [Message]
+        getPreviousMessageWithCount (since: BigInt!, count: Int!, channelId: String!): [Message],
+        getMessageOverPeriodOfTime (from: BigInt!, to: BigInt!, channelId: String!): [Message]
     }
 
     type Message {
@@ -27,16 +29,26 @@ const resolvers = {
     BigInt: BigIntResolver,
 
     Query: {
-        getMessages (_, {count, channelId}) {
+        getPreviousMessageWithCount (_, {since,count, channelId}) {
             return new Promise ((resolve, reject) => {
-                getChannelLatestMessageUseCase.execute(channelId, count, function (err, result) {
+                getPreviousChannelMessageWithCount.execute(channelId,since, count, function (err, result) {
+                if (err) {return reject(new ApolloError(err.message, "502"))}
+                if (!result) {return reject(new ApolloError('can not load your messages', "404"))}
+
+                return resolve(result)
+                })
+            })
+        },
+        getMessageOverPeriodOfTime (_, {from, to, channelId}) {
+            return new Promise ((resolve, reject) => {
+                getMessagesOverPeriodOfTime.execute(channelId, from, to, function (err, result) {
                 if (err) {return reject(new ApolloError(err.message, "502"))}
                 if (!result) {return reject(new ApolloError('can not load your messages', "404"))}
 
                 return resolve(result)
             })
         })
-      }
+    }
     }
 }
 

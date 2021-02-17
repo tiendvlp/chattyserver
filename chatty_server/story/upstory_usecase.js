@@ -5,7 +5,7 @@ const fs = require('fs')
 module.exports.execute = function (userEmail,channelId, type, resourceName, callback) {
     const uploadedDate = new Date()
     const expiredDate = new Date()
-    expiredDate.setDate(expiredDate.getDate() + 1)
+    expiredDate.setDate(uploadedDate.getDate() + 1)
 
     let newStory = {
         owner: userEmail,

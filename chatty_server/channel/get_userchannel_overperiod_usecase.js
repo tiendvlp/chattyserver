@@ -1,19 +1,20 @@
 const mongodb = require('../data/mongodb/ConnectMongodb')
 const channelEntity = require('../domain/entity/channel/Index')
 
-function execute (userEmail,fromLastUpdate, count, callback) {
+function execute (userEmail,from, to, callback) {
     let channelCollection = mongodb.get().collection('Channel')
 
     let query = {
         // channel that have userEmail as a member
         members: {$elemMatch: {email: userEmail}},
-        latestUpdate: {$lt: parseInt(fromLastUpdate)}
+        latestUpdate: {$gt: parseInt(from), $lt: parseInt(to)}
     }
+    
     let sort = {
         latestUpdate: -1
     }
 
-    return channelCollection.find(query).limit(count).sort(sort).toArray(function (err, result) {
+    return channelCollection.find(query).sort(sort).toArray(function (err, result) {
         if (err) {return callback(err, false)} 
         if (!result) {return callback(null, false)}
 
@@ -43,6 +44,5 @@ function execute (userEmail,fromLastUpdate, count, callback) {
         return callback(null, channelEntities )
     })
 }
-
 
 module.exports.execute = execute

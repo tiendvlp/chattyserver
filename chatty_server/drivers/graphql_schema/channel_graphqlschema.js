@@ -1,7 +1,9 @@
 const {makeExecutableSchema} = require('graphql-tools')
 const {BigIntResolver, JSONResolver} = require('graphql-scalars')
 
-const getUserChannelUseCase = require('../../channel/get_userlatestupdatechannel_usecase') 
+const getPreviousUserChannelUseCase = require('../../channel/get_previoususerchannel_withcount_usecase') 
+const getUserChannelFromTimeToTimeUseCase = require('../../channel/get_userchannel_overperiod_usecase') 
+
 const { ApolloError } = require('apollo-server')
 
 const typeDefs = `
@@ -9,7 +11,8 @@ const typeDefs = `
     scalar JSON
 
     type Query {
-        getChannels (lastUpdate: BigInt!,count: Int!): [Channel]
+        getPreviousChannels (lastUpdate: BigInt!,count: Int!): [Channel],
+        getChannelsFromTimeToTime (from: BigInt!, to: BigInt!): [Channel]
     }
 
     type Channel {
@@ -50,11 +53,21 @@ const queryResolvers = {
     BigInt: BigIntResolver,
     JSON: JSONResolver,
     Query: {
-        getChannels: function (_, {lastUpdate, count}, request) {
+        getPreviousChannels: function (_, {lastUpdate, count}, request) {
             return new Promise((resolve, reject ) => {
-                let userEmail = request.account.email
+                let userEmail = "mingting15@mintin.com"
                 console.log("olalal" + lastUpdate)
-                return getUserChannelUseCase.execute(userEmail,lastUpdate, count, function (err, result) {
+                return getPreviousUserChannelUseCase.execute(userEmail,lastUpdate, count, function (err, result) {
+                    if (err) {return reject(new ApolloError(err.message, "502"))}
+                    if (!result) {return reject(new ApolloError("Channel not found", "404"))}
+                    return resolve(result)
+                })
+            })
+        },
+        getChannelsFromTimeToTime: function (_, {from, to}, request) {
+        return new Promise((resolve, reject ) => {
+                let userEmail = "mingting15@mintin.com"
+                return getUserChannelFromTimeToTimeUseCase.execute(userEmail,from,to, function (err, result) {
                     if (err) {return reject(new ApolloError(err.message, "502"))}
                     if (!result) {return reject(new ApolloError("Channel not found", "404"))}
                     return resolve(result)
