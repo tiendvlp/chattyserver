@@ -31,32 +31,25 @@ function addChannelToUserObservableList (users, channelId) {
 
 function findCompactUsers (memberEmails, callback) {
     let query = {email : {$in : memberEmails}}
-    let normalize = {
-        _id: 1,
-        email : 1,
-        name : 1,
-        avatar: 0
-    }
 
-    db.get().collection("User").find(query, normalize).toArray(function(err, result) {
+    db.get().collection("User").find(query).toArray(function(err, result) {
+        console.log("user ne: " + result[0].email)
         if (err) return callback(err, false)
         if (!result) return callback(null, false)
-        console.log("compact user result: " + result[0].avatar)
         return callback(null, result) 
     })
 }
 
 function createNewChannel (admin, compactUsers, callback) {
     let title = ""
+    let members = []
     compactUsers.forEach(user => {
+        members[members.length] = {}
+        members[members.length-1].id = user._id.toString()
+        members[members.length-1].email = user.email
+        members[members.length-1].name = user.name
         title += user.name + ","
     }); 
-
-    let members = []
-
-    compactUsers.forEach(user => {
-        members[members.length] = user.email
-    })
 
     title = title.substr(0, title.length-1)
     let newChannel = {
@@ -69,7 +62,7 @@ function createNewChannel (admin, compactUsers, callback) {
                 content: "new message"
             }
         },
-        members : compactUsers,
+        members : members,
         seen: [admin],
         createdDate: new Date().getTime(),
         latestUpdate: new Date().getTime(),

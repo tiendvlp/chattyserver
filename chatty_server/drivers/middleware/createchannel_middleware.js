@@ -8,7 +8,10 @@ module.exports = function (req, res, next) {
             type : "newChannel",
             channelId: result._id.toString()
         }
-        sendNotification.execute(result._id, data)
+        
+        let socketData = result
+        socketData._id = socketData._id.toString()
+        sendNotification.execute(result._id, data, "newChannel", socketData)
         return res.status(200).json({message: "Create channel successfully !"})
     })
 }

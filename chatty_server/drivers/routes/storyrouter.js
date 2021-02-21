@@ -24,7 +24,9 @@ router.post("/upload/:channelid", verifyauth, upStoryReqValidator ,upToTemp,getR
               storyOutdatedDate: story.outdatedDate + "",
               channelId: story.channelId
             }
-            sendNotificationUseCase.execute(req.story.channelId, notificationData)
+            let socketData = story
+            socketData._id = story._id.toString()
+            sendNotificationUseCase.execute(req.story.channelId, notificationData, "newStory", socketData)
             return res.status(200).json({message: "Success"})
         })     
       }
