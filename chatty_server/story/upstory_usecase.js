@@ -1,6 +1,7 @@
 const db = require('../data/mongodb/ConnectMongodb')
 const imageStoryDocument = require('../data/mongodb/story/imagestory/imagestorydocument')
 const fs = require('fs')
+const update_channelstatus_usecase = require('../channelstatus/update_channelstatus_usecase')
 
 module.exports.execute = function (userEmail,channelId, type, resourceName, callback) {
     const uploadedDate = new Date()
@@ -16,10 +17,12 @@ module.exports.execute = function (userEmail,channelId, type, resourceName, call
         channelId: channelId
     }
 
-    db.get().collection("Story").insertOne (newStory, function (err) {
+    db.get().collection("Story").insertOne (newStory, function (err, result) {
         clearTemp(resourceName)
-        if (err) {return callback(err)}
-        return callback(null)        
+        if (err) {return callback(err, false)}
+        update_channelstatus_usecase.execute(userEmail, channelId, "storyId/text", "New story", function (err) {
+        })
+        return callback(null, result.ops[0])        
     })
 }
 

@@ -12,11 +12,11 @@ const app = express()
 const server = http.createServer(app)
 const io_instance = require('../common/socket_io_instance')
 const firebaseAdmin = require('firebase-admin')
+const firebaseInstance = require('../common/firebaseadmin_instance')
 const accountService = require('../service_account.json')
 const notificationRouter = require('../drivers/routes/notificationrouter')
 const graphqlRouter = require('../drivers/routes/graphql_router')
 const verifyauth = require('../drivers/middleware/verifyauth_middleware')
-const abc = require('../drivers/middleware/uploadresource_totemp_middleware')
 // init router
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -30,6 +30,7 @@ app.use(function (req, res, next) {
     }
     next();
 })
+firebaseInstance.init()
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())

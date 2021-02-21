@@ -24,8 +24,6 @@ const typeDefs = `
         channelId: String!
     }
 `
-
-
 const resolvers = {
     BigInt: BigIntResolver,
 

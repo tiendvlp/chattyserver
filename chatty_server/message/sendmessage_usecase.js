@@ -2,7 +2,8 @@ const db = require('../data/mongodb/ConnectMongodb')
 const ObjectId = require('mongodb').ObjectID
 const updateStatusUseCase = require('../channelstatus/update_channelstatus_usecase')
 
-const execute = function (messageBody, senderEmail, channelId, type, content, callback) {
+const execute = function (senderEmail, channelId, type, content, callback) {
+    console.log("channel id la " + channelId)
     var newMessageDoc = {
         type: type,
         content: content,
@@ -10,11 +11,10 @@ const execute = function (messageBody, senderEmail, channelId, type, content, ca
         channelId : new ObjectId (channelId),
         createdDate : new Date().getTime()
     }
-    return db.get().collection("Message").insertOne (newMessageDoc, function (err) {
+    return db.get().collection("Message").insertOne (newMessageDoc, function (err, result) {
         if (err) {return callback(err, false)}
-
-        return updateStatusUseCase.execute(senderEmail,channelId, "Text", messageBody, function (err) {
-            return callback (null, newMessageDoc)
+        return updateStatusUseCase.execute(senderEmail,channelId, type, content, function (err) {
+            return callback (null, result.ops[0])
         })
     })
 }

@@ -1,5 +1,4 @@
 module.exports = function (req, res, next) {
-
     if (req.body.body) {
         req.message.type = "text"
         req.message.content = req.body.body
@@ -9,7 +8,7 @@ module.exports = function (req, res, next) {
     let fileType = req.resource.fileType
     if (fileType === "image" || fileType === "video" || fileType === "audio") {
         req.message.type = fileType
-        req.message.content = req.resource.fileName
+        req.message.content = " sent an attachment"
         return next()
     }
     

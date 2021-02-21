@@ -1,6 +1,6 @@
 const {makeExecutableSchema} = require('graphql-tools')
 const {BigIntResolver, JSONResolver} = require('graphql-scalars')
-
+const getUserObservedChannelId = require('../../channel/get_userobservedchannelid_usecase')
 const getPreviousUserChannelUseCase = require('../../channel/get_previoususerchannel_withcount_usecase') 
 const getUserChannelFromTimeToTimeUseCase = require('../../channel/get_userchannel_overperiod_usecase') 
 
@@ -12,7 +12,8 @@ const typeDefs = `
 
     type Query {
         getPreviousChannels (lastUpdate: BigInt!,count: Int!): [Channel],
-        getChannelsFromTimeToTime (from: BigInt!, to: BigInt!): [Channel]
+        getChannelsFromTimeToTime (from: BigInt!, to: BigInt!): [Channel],
+        getUserObservedChannelId (userEmail: String!): [String]
     }
 
     type Channel {
@@ -70,6 +71,14 @@ const queryResolvers = {
                 return getUserChannelFromTimeToTimeUseCase.execute(userEmail,from,to, function (err, result) {
                     if (err) {return reject(new ApolloError(err.message, "502"))}
                     if (!result) {return reject(new ApolloError("Channel not found", "404"))}
+                    return resolve(result)
+                })
+            })
+        },
+        getUserObservedChannelId: function (_, {userEmail}, request) {
+            return new Promise((resolve, reject ) => {
+                getUserObservedChannelId.execute("mingting15@mintin.com", function (err, result) {
+                    if (err) {return reject(new ApolloError(err.message, "502"))}
                     return resolve(result)
                 })
             })

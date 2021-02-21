@@ -4,17 +4,18 @@ const sendTextMessageUsecase = require("../message/sendmessage_usecase")
 
 module.exports.execute = function (adminEmail,memberEmails, firstMessage, callback) {
     memberEmails[memberEmails.length] = adminEmail
+    console.log("admin email la: " + adminEmail)
     return findCompactUsers(memberEmails, function (err, result) {
-        if(result.length <= 0) {return callback(new Error("Your userIds is invalid"))}
-        if (err) return callback(err)
-        if (!result) return callback(result)
+        if(result.length !== memberEmails.length) {console.log("different size"); return callback(new Error("Your userIds is invalid"), false)}
+        if (err) return callback(err, false)
+        if (!result) return callback(new Error("Internal error"), false)
         let compactUsers = result
-        return createNewChannel(adminEmail,compactUsers, function (err,channelId) {
-            if (err) {return callback(err)}
-            return sendFirstMessage(adminEmail,firstMessage,channelId, function (err) {
-                if (err) {rollback(channelId); return callback(err);} 
-                addChannelToUserObservableList(compactUsers, channelId)
-                return callback(null)
+        return createNewChannel(adminEmail,compactUsers, function (err,channel) {
+            if (err) {return callback(err, false)}
+            return sendFirstMessage(adminEmail,firstMessage,channel._id.toString(), function (err) {
+                if (err) {rollback(channel._id.toString()); return callback(err, false);} 
+                addChannelToUserObservableList(compactUsers, channel._id.toString())
+                return callback(null, channel)
             })
         })
     })
@@ -31,15 +32,16 @@ function addChannelToUserObservableList (users, channelId) {
 function findCompactUsers (memberEmails, callback) {
     let query = {email : {$in : memberEmails}}
     let normalize = {
-        _id : 1,
+        _id: 1,
         email : 1,
-        name : 1
+        name : 1,
+        avatar: 0
     }
 
     db.get().collection("User").find(query, normalize).toArray(function(err, result) {
         if (err) return callback(err, false)
         if (!result) return callback(null, false)
-        console.log("compact user result: " + result)
+        console.log("compact user result: " + result[0].avatar)
         return callback(null, result) 
     })
 }
@@ -61,9 +63,13 @@ function createNewChannel (admin, compactUsers, callback) {
         title : title,
         admin: admin,
         status : {
-            
+            senderEmail: admin,
+            description: {
+                type: "text",
+                content: "new message"
+            }
         },
-        members : members,
+        members : compactUsers,
         seen: [admin],
         createdDate: new Date().getTime(),
         latestUpdate: new Date().getTime(),
@@ -72,12 +78,12 @@ function createNewChannel (admin, compactUsers, callback) {
     db.get().collection("Channel").insertOne(newChannel, function (err, result) {
         if (err) return callback(err, null)
         console.log("Inserted Channel id: " + result.ops[0]._id)
-        return callback(null, result.ops[0]._id)
+        return callback(null, result.ops[0])
     })
 }
 
 function sendFirstMessage (adminEmail,firstMessage, channelId, callback) {
-    return sendTextMessageUsecase.execute(firstMessage.body,adminEmail, channelId, function (err) {
+    return sendTextMessageUsecase.execute(adminEmail, channelId, "text", firstMessage.body, function (err) {
         if (err) return callback(err)
         return callback(null)
     })
