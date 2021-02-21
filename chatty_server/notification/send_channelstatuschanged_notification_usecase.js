@@ -15,7 +15,7 @@ module.exports.execute = function (channelId, data,socketEvent, socketData) {
                 notification.body = status.description.content
             } else {
                 notification.title = channel.title
-                notification.body = status.senderEmail + ": " + status.description.content
+                notification.body = senderName + ": " + status.description.content
             }
             sendNotification(notification,data, members, status.senderEmail)
             sendSocketEvent(socketEvent, socketData, members, status.senderEmail)
@@ -31,8 +31,7 @@ function sendNotification (notification,data, members, senderEmail) {
 
     // Send a message to devices subscribed to the provided topic.
     members.forEach ((mem) => {
-        if (mem.email === senderEmail) {return}
-        message.topic = mem.id.toString()
+        message.topic = mem.id
         firebaseAdminInstance.get().messaging().send(message)
         .then((response) => {
             // Response is a message ID string.
@@ -49,7 +48,6 @@ function sendSocketEvent (event, data, members, senderEmail) {
     // Send a message to devices subscribed to the provided topic.
     var socketIOInstance = socketIO.get()
     members.forEach ((mem) => {
-        if (mem.email === senderEmail) {return}
         socketIOInstance = socketIOInstance.to(mem.email)
     })
     socketIOInstance.emit(event, data)

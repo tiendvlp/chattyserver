@@ -41,7 +41,7 @@ function findCompactUsers (memberEmails, callback) {
 }
 
 function createNewChannel (admin, compactUsers, callback) {
-    let title = ""
+    var title = ""
     let members = []
     compactUsers.forEach(user => {
         members[members.length] = {}
@@ -52,6 +52,8 @@ function createNewChannel (admin, compactUsers, callback) {
     }); 
 
     title = title.substr(0, title.length-1)
+    if (members.length === 2) {title = ""}
+
     let newChannel = {
         title : title,
         admin: admin,
@@ -67,6 +69,7 @@ function createNewChannel (admin, compactUsers, callback) {
         createdDate: new Date().getTime(),
         latestUpdate: new Date().getTime(),
     }
+
 
     db.get().collection("Channel").insertOne(newChannel, function (err, result) {
         if (err) return callback(err, null)
