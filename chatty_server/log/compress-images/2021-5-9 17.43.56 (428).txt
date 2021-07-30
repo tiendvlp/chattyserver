@@ -1,0 +1,8 @@
+File from: [temp/41b5199cb6c2360713abdf658562be9c.png]
+
+File to: [images41b5199cb6c2360713abdf658562be9c.png]
+
+Compression algorithm: [pngquant]
+
+Description: Error: Command failed: /Users/dangminhtien/Desktop/server/chatty_server/chatty_server/node_modules/pngquant-bin/vendor/pngquant --quality=20-50 -o images41b5199cb6c2360713abdf658562be9c.png temp/41b5199cb6c2360713abdf658562be9c.png
+  error: 'images41b5199cb6c2360713abdf658562be9c.png' exists; not overwriting

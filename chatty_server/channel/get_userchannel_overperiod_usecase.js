@@ -21,12 +21,11 @@ function execute (userEmail,from, to, callback) {
         var channelEntities = []
 
         for (i = 0; i < result.length; i++) {
+            console.log("FindChannel: " + result.title)
             var members = result[i].members.map((mem) => {
                 return {
-                   id: mem._id.toString(),
+                   id: mem.id,
                    email: mem.email,
-                   name: mem.name,
-                   avatar: mem.avatar 
                 }
             })
 
@@ -38,7 +37,8 @@ function execute (userEmail,from, to, callback) {
                 result[i].createdDate,
                 result[i].latestUpdate,
                 result[i].status,
-                result[i].admin           )
+                result[i].admin           
+            )
         }
         
         return callback(null, channelEntities )

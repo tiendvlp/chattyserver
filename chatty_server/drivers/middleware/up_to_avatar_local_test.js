@@ -1,10 +1,9 @@
 const multer = require('multer')
 const crypto = require('crypto')
-const config = require('../common/config.js')
-
 const storage = multer.diskStorage({
+
     destination: function(req, file, callback) {
-        callback(null, './' + config.notValidatedFolderPath);
+        callback(null, './testsrc/avatar');
     },
 
     filename: function(req, file, callback) {
@@ -15,12 +14,7 @@ const storage = multer.diskStorage({
                 return callback(err, false)
             }
             const filename = buf.toString("hex") + "." + fileExtension
-            req.resource = {
-                fileType: file.mimetype.split('/')[0],
-                fileExtension: fileExtension,
-                fileName: filename,
-                folderPath: config.notValidatedFolderPath
-            }
+            req.resource = { fileType: file.mimetype.split('/')[0], fileExtension: fileExtension, fileName: filename }
             console.log("crypto: " + filename)
             return callback(null, filename)
         });
@@ -28,7 +22,6 @@ const storage = multer.diskStorage({
 });
 
 const multerFilter = function(req, file, callback) {
-
     if (file.mimetype === "image/png" || file.mimetype === "image/jpeg") {
         return callback(null, true)
     }

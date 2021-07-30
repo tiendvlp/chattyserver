@@ -12,10 +12,10 @@ module.exports.execute = function (channelId, data,socketEvent, socketData) {
             let notification = {title: "", body: ""}
             if (channel.title === "") {
                 notification.title = senderName
-                notification.body = status.description.content
+                notification.body = status.content
             } else {
                 notification.title = channel.title
-                notification.body = senderName + ": " + status.description.content
+                notification.body = senderName + ": " + status.content
             }
             sendNotification(notification,data, members, status.senderEmail)
             sendSocketEvent(socketEvent, socketData, members, status.senderEmail)

@@ -6,7 +6,6 @@ const sendMessageReqValidatorMiddleware = require('../validator/sendmessage_req_
 const upToTemp = require('../../drivers/middleware/uploadresource_totemp_middleware')
 const upToDb = require('../../drivers/middleware/uploadresource_fromtemptodb_middleware')
 const validateType = require('../middleware/validate_messagetype_middleware')
-const socketIO = require('../../common/socket_io_instance')
 
 router.post("/sendtextmessage/:channelid", verifyauth,sendMessageReqValidatorMiddleware,validateType, sendMessageMiddleware, function (req, res, next) {
 })

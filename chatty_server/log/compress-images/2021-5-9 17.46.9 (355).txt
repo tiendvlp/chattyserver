@@ -1,0 +1,8 @@
+File from: [temp/d46171a96aba9ab5d08876c5b1915505.jpg]
+
+File to: [temp/d46171a96aba9ab5d08876c5b1915505.jpg]
+
+Compression algorithm: [mozjpeg]
+
+Description: Error: Command failed: /Users/dangminhtien/Desktop/server/chatty_server/chatty_server/node_modules/mozjpeg/vendor/cjpeg -quality 60 -outfile temp/d46171a96aba9ab5d08876c5b1915505.jpg temp/d46171a96aba9ab5d08876c5b1915505.jpg
+Empty input file
